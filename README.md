@@ -10,6 +10,7 @@ Bluetooth scanner for blueborne-vulnerable devices, Android only for the moment
 
 ## Quickstart
 ```
+# (RECOMENDED USE IN VENV)
 git clone https://github.com/hook-s3c/blueborne-scanner.git
 cd blueborne-scanner
 sudo chmod +x ./bluebornescan.py

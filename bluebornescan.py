@@ -1,3 +1,4 @@
+import os
 import time
 import bluetooth
 from classes.deviceslist import devices
@@ -5,8 +6,16 @@ from classes.deviceslist import devices
 devicelookup = devices.get_devices()
 
 def search():         
-    print "searching for devices"
-    devices = bluetooth.discover_devices(duration=20, lookup_names = True)
+    print("searching for devices")
+    try:
+        devices = bluetooth.discover_devices(duration=20, lookup_names = True)
+    except OSError as oserr:
+        if oserr.errno == 19: # Not such device
+            if os.getuid() == 0:
+                print("device bluetooth not found. Try reconnect again!!!!")
+            else:
+                print("device bluetooth not found. Retry in root or with sudo")
+        raise SystemExit(0)
     return devices
 
 def is_device_vulnerable(addr):
@@ -37,7 +46,7 @@ if __name__=="__main__":
             if (results!=None):
                 for addr, name in results:
                     vulnerable = is_device_vulnerable(addr)
-                    print "{0} - {1} - {isVulnerable}Vulnerable".format(addr, name, isVulnerable="!!! IS " if vulnerable else "NOT ")
+                    print("{0} - {1} - {isVulnerable}Vulnerable".format(addr, name, isVulnerable="!!! IS " if vulnerable else "NOT "))
                 #endfor
             #endif
             time.sleep(60)
